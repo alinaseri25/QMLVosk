@@ -136,12 +136,14 @@ ApplicationWindow {
                 color: appTheme.surface
                 border.color: appTheme.border
                 border.width: 1
+                Layout.alignment: Qt.AlignVCenter
 
                 ScrollView{
+                    anchors.fill: parent
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 16
-                        spacing: 12
+                        anchors.leftMargin: 16
+                        //spacing: 12
 
                         Text {
                             text: qsTr("Controls")

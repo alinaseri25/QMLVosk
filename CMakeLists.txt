@@ -47,8 +47,8 @@ qt6_add_resources(${PROJECT_NAME} "qmlchartsgallery"
 
 # ---------------- Vosk paths ----------------
 
-set(VOSK_WINDOWS_DIR "D:/my_Projects/Programming/Qt/QtLibraries/voskWin")
-set(VOSK_ANDROID_DIR "D:/my_Projects/Programming/Qt/QtLibraries/voskAndroid")
+set(VOSK_WINDOWS_DIR "D:/my_Projects/Programming/Qt/exLibes/voskWin")
+set(VOSK_ANDROID_DIR "D:/my_Projects/Programming/Qt/exLibes/voskAndroid")
 
 # include path (header)
 target_include_directories(QMLVosk PRIVATE

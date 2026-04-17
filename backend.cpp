@@ -25,6 +25,25 @@ void Backend::onQmlLoaded()
 
 #ifdef ANDROID
     modelOnDisk = ensureModelAvailable(QString("assets:/models/vosk-model-small-fa-0.5"),QString("vosk-model-small-fa-0.5"));
+    QJniObject context = QNativeInterface::QAndroidApplication::context();
+    if (!context.isValid())
+        return;
+
+    QJniObject::callStaticMethod<void>(
+        "org/verya/QMLVosk/MainActivity",
+        "manageScreenAndWakeLock",
+        "(Landroid/content/Context;ZZ)V",
+        context.object(),
+        (jboolean)true,  // screenAlwaysOn
+        (jboolean)true    // wakeLock
+        );
+
+    QJniObject::callStaticMethod<void>(
+        "org/verya/QMLVosk/MainActivity",
+        "setDimTimeoutFromQt",
+        "(J)V",
+        0
+        );
 #else
     modelOnDisk = ensureModelAvailable(QString("./vosk-model-small-fa-0.5"),QString("vosk-model-small-fa-0.5"));
 #endif

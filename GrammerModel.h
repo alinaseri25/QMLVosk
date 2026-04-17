@@ -25,6 +25,7 @@ public:
     Q_INVOKABLE void clear();
 
     void loadFromJson(const QByteArray &jsonData);
+    void loadFromJson(const QJsonDocument &jsonDoc);
     QString toJson() const;
     const QStringList &toList();
 

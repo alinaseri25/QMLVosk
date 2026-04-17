@@ -44,7 +44,12 @@ void GrammerModel::clear()
 
 void GrammerModel::loadFromJson(const QByteArray &jsonData)
 {
-    QJsonArray arr = QJsonDocument::fromJson(jsonData).array();
+    loadFromJson(QJsonDocument::fromJson(jsonData));
+}
+
+void GrammerModel::loadFromJson(const QJsonDocument &jsonDoc)
+{
+    QJsonArray arr = jsonDoc.array();
 
     beginResetModel();
     m_items.clear();

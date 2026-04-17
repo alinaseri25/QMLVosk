@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QDebug>
-
+#ifdef Q_OS_ANDROID
+    #include <QJniObject>
+    #include <QCoreApplication>
+#endif
 
 #include "../../QtLibraries/vosk/voiceengine.h"
 #include "GrammerModel.h"
