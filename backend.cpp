@@ -226,7 +226,7 @@ bool Backend::copyDirectoryRecursive(const QString &srcDirPath, const QString &d
     return true;
 }
 
-void Backend::resultFound(QString text)
+void Backend::resultFound(const QJsonDocument finalResultDoc)
 {
-    emit newResult(text);
+    emit newResult(finalResultDoc.object().value("text").toString(""));
 }

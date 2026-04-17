@@ -33,7 +33,7 @@ private:
     bool copyDirectoryRecursive(const QString &srcDirPath, const QString &dstDirPath);
 
 private slots:
-    void resultFound(QString text);
+    void resultFound(const QJsonDocument finalResultDoc);
 
 signals:
     void voiceEngineChangeState(bool isInit,bool isStarted);

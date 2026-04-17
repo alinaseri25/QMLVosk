@@ -118,10 +118,10 @@ ApplicationWindow {
                     anchors.fill: parent
                     clip: true
 
-                    Text {
+                    TextArea {
                         id: commandText
-                        anchors.fill: parent
                         color: appTheme.textPrimary
+                        readOnly: true
                     }
                 }
             }
@@ -187,7 +187,7 @@ ApplicationWindow {
                                     text: stringValue
                                     color: "white"
                                     wrapMode: Text.Wrap
-
+                                    textFormat: Text.RichText
                                 }
                             }
 
@@ -263,7 +263,7 @@ ApplicationWindow {
         }
 
         function onNewResult(cmd){
-            commandText.text = cmd + "\n" + commandText.text
+            commandText.append(cmd)
         }
 
         function onShowMessage(success,msg){
