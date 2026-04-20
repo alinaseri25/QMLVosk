@@ -7,6 +7,9 @@
     #include <QJniObject>
     #include <QCoreApplication>
 #endif
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "../../QtLibraries/vosk/voiceengine.h"
 #include "GrammerModel.h"
@@ -31,6 +34,7 @@ private:
     QString ensureModelAvailable(const QString &resourcePath, const QString &fileName);
     bool copyFileChunked(const QString &srcPath, const QString &dstPath);
     bool copyDirectoryRecursive(const QString &srcDirPath, const QString &dstDirPath);
+    void askForPermission(const QStringList &permissions, int requestCode);
 
 private slots:
     void resultFound(const QJsonDocument finalResultDoc);

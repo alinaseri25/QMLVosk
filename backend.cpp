@@ -1,5 +1,40 @@
 #include "backend.h"
 
+static Backend* g_mainWindowInstance = nullptr;
+
+#ifdef ANDROID
+extern "C"
+    JNIEXPORT void JNICALL
+        Java_org_verya_QMLVosk_TestBridge_nativeOnPermissionResult
+    (JNIEnv *env, jclass /*clazz*/, jstring msg)
+{
+    if (!g_mainWindowInstance)
+        return;
+
+    // تبدیل jstring به QString در همان thread JNI
+    QString jsonStr = QJniObject(msg).toString();
+
+    QJsonDocument doc = QJsonDocument::fromJson(jsonStr.toUtf8());
+    QJsonObject root = doc.object();
+    QJsonArray perms = root["results"].toArray();
+
+    for (const QJsonValue &v : perms) {
+        QJsonObject o = v.toObject();
+        QString permission = o["permission"].toString();
+        bool granted = o["granted"].toBool();
+        qDebug() << permission << (granted ? "✅" : "❌");
+    }
+
+    // QMetaObject::invokeMethod(g_mainWindowInstance, [=]() {
+    //     QString str = (qMsg == "start") ? "Play" : "Pause";
+
+    //     qDebug() << "str:" << str << "--msg:" << qMsg;
+
+    //     g_mainWindowInstance->onPlayPause(str);
+    // }, Qt::QueuedConnection);
+}
+#endif
+
 Backend::Backend(GrammerModel *_grammerModel, QObject *parent)
     : QObject{parent}
 {
@@ -24,6 +59,9 @@ void Backend::onQmlLoaded()
     QString modelOnDisk;
 
 #ifdef ANDROID
+    QStringList permissions = {"android.permission.RECORD_AUDIO"};
+    askForPermission(permissions,12);
+
     modelOnDisk = ensureModelAvailable(QString("assets:/models/vosk-model-small-fa-0.5"),QString("vosk-model-small-fa-0.5"));
     QJniObject context = QNativeInterface::QAndroidApplication::context();
     if (!context.isValid())
@@ -230,3 +268,27 @@ void Backend::resultFound(const QJsonDocument finalResultDoc)
 {
     emit newResult(finalResultDoc.object().value("text").toString(""));
 }
+
+
+void Backend::askForPermission(const QStringList &permissions, int requestCode)
+{
+#ifdef ANDROID
+    QJniEnvironment env;
+    jobjectArray jPerms = env->NewObjectArray(permissions.size(),
+                                              env->FindClass("java/lang/String"),
+                                              nullptr);
+
+    for (int i = 0; i < permissions.size(); ++i)
+        env->SetObjectArrayElement(jPerms, i,
+                                   QJniObject::fromString(permissions[i]).object<jstring>());
+
+    QJniObject::callStaticMethod<void>(
+        "org/verya/QMLVosk/MainActivity",
+        "requestAppPermissions",
+        "([Ljava/lang/String;I)V",
+        jPerms,
+        requestCode
+        );
+#endif
+}
+
